@@ -386,6 +386,13 @@ static __inline__ CGFloat CGPointDistanceBetweenTwoPoints(CGPoint point1, CGPoin
     [self setChartValues:chartValues];
 }
 
+-(void)collapseAllPieces
+{
+    for(VBPiePiece *piece in _piecesArray) {
+        [piece animateToAccent:0];
+    }
+}
+
 
 - (CALayer *)layerForTouch:(UITouch *)touch {
     CGPoint location = [touch locationInView:[touch view]];
@@ -430,10 +437,25 @@ static __inline__ CGFloat CGPointDistanceBetweenTwoPoints(CGPoint point1, CGPoin
     if (CGPointDistanceBetweenTwoPoints(point, _touchBegan) < 5) {
         _hitLayer = (VBPiePiece*)[self layerForTouch:touch];
         
+        if(!_hitLayer) {
+            return;
+        }
+        
+        NSUInteger pieceIndex = [_piecesArray indexOfObject:_hitLayer];
+        [self.delegate pieChart:self didTapPieceAtIndex:pieceIndex];
+        
         if (_hitLayer.accentPrecent < FLT_EPSILON) {
             [_hitLayer animateToAccent:_maxAccentPrecent];
         } else {
             [_hitLayer animateToAccent:0];
+        }
+        
+        if(_allowOnlyOneAccentedPiece) {
+            for(VBPiePiece *piece in _piecesArray) {
+                if(piece != _hitLayer) {
+                    [piece animateToAccent:0];
+                }
+            }
         }
     }
 }

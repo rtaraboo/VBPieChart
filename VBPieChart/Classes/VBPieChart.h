@@ -40,6 +40,18 @@ typedef NS_ENUM(NSUInteger, VBLabelsPosition) {
 typedef CGPoint (^VBLabelBlock)(CALayer*layer, NSInteger index);
 
 
+
+@class VBPieChart;
+
+@protocol VBPieChartDelegate <NSObject>
+
+@required
+-(void)pieChart:(VBPieChart *)pieChart didTapPieceAtIndex:(NSInteger)index;
+
+@end
+
+
+
 /*!
  @abstract Animatable Pie Chart control. Have abilities insert and delete values with animation.
  
@@ -57,6 +69,13 @@ typedef CGPoint (^VBLabelBlock)(CALayer*layer, NSInteger index);
  @endcode
  */
 @interface VBPieChart : UIView
+
+
+@property (nonatomic, weak) id<VBPieChartDelegate> delegate;
+
+-(void)collapseAllPieces;
+
+@property (nonatomic) BOOL allowOnlyOneAccentedPiece;
 
 /*!
  @abstract Option to specify position of labels on the chart.
